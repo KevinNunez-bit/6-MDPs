@@ -35,8 +35,27 @@ class Inventario(MDP):
         return list(range(0, self.capacidad - s + 1))
 
     def recompensa(self, s, a, s_):
-        # TODO: Completar este método
-        pass
+        disponible = s + a  # inventario disponible para satisfacer demanda del dia
+
+        # inferimos la demanda del dia a partir del estado siguiente
+        if s_ > -self.max_backlog:
+            d = disponible - s_
+        else:
+            # en el limite del backlog usamos la demanda minima que nos lleva ahi
+            d = disponible + self.max_backlog
+
+        if d < 0:
+            return 0.0
+
+        # solo se pueden vender las unidades que esten disponibles fisicamente
+        vendidas = max(0, min(disponible, d))
+        ingreso = self.precio * vendidas
+
+        costo_orden = self.costo_unidad * a + (self.costo_fijo if a > 0 else 0)
+        costo_hold = self.costo_almacen * max(0, s_)
+        penalizacion = self.costo_backlog * max(0, -s_)
+
+        return ingreso - costo_orden - costo_hold - penalizacion
 
     def _poisson_pmf(self, k):
         if k < 0:
