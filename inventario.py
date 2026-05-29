@@ -1,67 +1,72 @@
 """
-Para desarrollar el problema del inventario.
+ Para desarrollar el problema del inventario.
 
-"""
+ """
 
 from MDPs import MDP, iteracion_valor
+from math import exp, factorial
+
 
 class Inventario(MDP):
     """
-    Clase que representa un MDP para el problema del camión mágico.
-    
-    Si caminas, avanzas 1 con coso 1
-    Si usas el camion, con probabilidad rho avanzas el doble de donde estabas
-    y con probabilidad 1-rho te quedas en el mismo lugar. Todo con costo 2.
-    
-    El objetivo es llegar a la meta en el menor costo posible
-    
-    """    
-    
-    def __init__(self, gama,lambda_, ...): #TODO: Agregar lo que se requiera
-        #TODO: Completar el constructor
-        self.gamma = #TODO: Agregar lo que se requiera
-        self.lambda_ = #TODO: Agregar lo que se requiera
-        self.estados = #TODO: Agregar lo que se requiera
-        #TODO: Agregar lo que se requiera
-    
+    MDP para el problema de inventario de Necroelectronica.
+
+    Estados: inventario al final del dia, desde -max_backlog hasta capacidad
+    Acciones: cuantas unidades pedir al proveedor (llegan al dia siguiente)
+    """
+
+    def __init__(self, gama, lambda_, capacidad=20, max_backlog=10,
+                 precio=150, costo_unidad=80, costo_fijo=40,
+                 costo_almacen=5, costo_backlog=15):
+        self.lambda_ = lambda_
+        self.capacidad = capacidad
+        self.max_backlog = max_backlog
+        self.precio = precio
+        self.costo_unidad = costo_unidad
+        self.costo_fijo = costo_fijo
+        self.costo_almacen = costo_almacen
+        self.costo_backlog = costo_backlog
+
+        estados = tuple(range(-max_backlog, capacidad + 1))
+        super().__init__(estados, gama)
+
     def acciones_legales(self, s):
-        #TODO: Completar este método
+        # TODO: Completar este método
         pass
-    
+
     def recompensa(self, s, a, s_):
-        #TODO: Completar este método
+        # TODO: Completar este método
         pass
-        
+
     def prob_transicion(self, s, a, s_):
-        #TODO: Completar este método
+        # TODO: Completar este método
         pass
-                
+
     def es_terminal(self, s):
-        #TODO: Completar este método
+        # TODO: Completar este método
         pass
 
 
 if __name__ == "__main__":
 
-    inventario = Inventario(0.9, 0.5, ...)  #TODO: Agregar lo que se requiera
+    inventario = Inventario(gama=0.95, lambda_=4)
 
-    pi_star, V = iteracion_valor(inventario, ...) #TODO: Agregar lo que se requiera
+    pi_star, V = iteracion_valor(inventario, epsilon=1e-4)
 
     print("-" * 60)
     print("Estado".center(20) + "Acción".center(20) + "Valor".center(20))
-    print("-" * 60 )
-    for s in pi_star:
+    print("-" * 60)
+    for s in sorted(pi_star):
         print(f"{s:^20}{pi_star[s]:^20}{V[s]:^20.2f}")
     print("-" * 60)
-
 
 """
 Contesta las preguntas aquí mismo (has espacio entre las preguntas):
 
-1. ¿Cómo se comporta las transiciones y las ganancias para casos específicos de $s$ y $a$? 
-2. ¿Qué psa si hay mucho almacen? 
-3. ¿Que pasa si hay muy poco o estamos sin almacen? 
-4. ¿Existe un punto donde la ganancia sea máxima?  
+1. ¿Cómo se comporta las transiciones y las ganancias para casos específicos de $s$ y $a$?
+2. ¿Qué psa si hay mucho almacen?
+3. ¿Que pasa si hay muy poco o estamos sin almacen?
+4. ¿Existe un punto donde la ganancia sea máxima?
 ---
 5. ¿Cómo se ve la política óptima? ¿Tiene sentido?
 6. ¿Como se comporta la función de valor de estado V(s)?
