@@ -38,9 +38,32 @@ class Inventario(MDP):
         # TODO: Completar este método
         pass
 
+    def _poisson_pmf(self, k):
+        if k < 0:
+            return 0.0
+        return exp(-self.lambda_) * (self.lambda_ ** k) / factorial(k)
+
     def prob_transicion(self, s, a, s_):
-        # TODO: Completar este método
-        pass
+        disponible = s + a  # inventario al inicio del dia tras recibir el pedido
+
+        if s_ > -self.max_backlog:
+            d = disponible - s_  # demanda implicita para llegar a s_
+            if d < 0:
+                return 0.0
+            return self._poisson_pmf(d)
+        else:
+            # s_ == -max_backlog: la demanda fue tan alta que saturamos el backlog
+            # P(D >= disponible + max_backlog)
+            d_min = disponible + self.max_backlog
+            if d_min <= 0:
+                return 1.0
+            prob_cola = 0.0
+            for d in range(d_min, d_min + 60):
+                p = self._poisson_pmf(d)
+                prob_cola += p
+                if p < 1e-10:
+                    break
+            return prob_cola
 
     def es_terminal(self, s):
         # el inventario no tiene estados terminales, opera indefinidamente
