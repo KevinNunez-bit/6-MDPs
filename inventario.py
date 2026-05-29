@@ -31,8 +31,8 @@ class Inventario(MDP):
         super().__init__(estados, gama)
 
     def acciones_legales(self, s):
-        # TODO: Completar este método
-        pass
+        # se puede pedir desde 0 hasta llenar el almacen al maximo
+        return list(range(0, self.capacidad - s + 1))
 
     def recompensa(self, s, a, s_):
         # TODO: Completar este método
@@ -43,8 +43,8 @@ class Inventario(MDP):
         pass
 
     def es_terminal(self, s):
-        # TODO: Completar este método
-        pass
+        # el inventario no tiene estados terminales, opera indefinidamente
+        return False
 
 
 if __name__ == "__main__":
